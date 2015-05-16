@@ -12,15 +12,7 @@
 #include "Shell.h"
 #include "utilities.h"
 
-int bgcpt = 0;
-
-/*
- * Display shell prompt.
- */
-void shellPrompt() 
-{
-	printf("[Shell]:%s$ ", getcwd(NULL, 0));
-}
+int jobs = 0;
 
 /* 
  * Parse command line.
@@ -41,8 +33,8 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 
 			while ((dir = readdir(current)) != NULL) 
 			{
-				if ((strcmp(dir->d_name, "..") != 0) 
-						&& (strcmp(dir->d_name, ".") != 0)) 
+				if ((strcmp(dir->d_name, "..") != 0) &&
+					(strcmp(dir->d_name, ".") != 0)) 
 				{
 					folders[j] = malloc(sizeof(char) * 50); // Taille 50 char
 					strcpy(folders[j], dir->d_name);
@@ -71,26 +63,22 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 		}			
 	}
 
-	if (i > 1) // Redirection
-	{ 
-		if (strcmp(args[i-2], ">") == 0)
+	if (i > 1 && strcmp(args[i-2], ">") == 0) // Redirection
 			*out = 1;	
-	}
 
 	return i;
 }
 
 
-int execcmd(char ** args, int * bg, int * out, int i) {
+void launch_process(char ** args, int * bg, int * out, int i) {
 
 	int pid;
 	int j;
-	int ret;
 
 	if ((pid = fork()) < 0) 
 	{
-		printf("Erreur fork : %s\n", strerror(errno));
-		ret = -1;
+		perror("Erreur fork !");
+		exit(EXIT_FAILURE);
 	}
 
 	// FILS
@@ -100,9 +88,7 @@ int execcmd(char ** args, int * bg, int * out, int i) {
 		if (*out == 1)
 		{
 			int h = open(args[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
-
 			dup2(h, 1);
-
 			close(h);
 			args[i-2] = NULL;
 		}	
@@ -110,36 +96,35 @@ int execcmd(char ** args, int * bg, int * out, int i) {
 		if (execvp(args[0], args) != 0)
 			printf("Commande introuvable\n");
 
-		exit(EXIT_SUCCESS);
+		//exit(EXIT_SUCCESS);
 	} 
 	else 
 	{
 		if (*bg == 0) 
+		{
 			waitpid(pid, 0, 0);
+		}
 		else 
 		{
-			bgcpt++;
-			printf("[%d] %d\n", bgcpt, pid); 
+			++jobs;
+			printf("[%d] %d\n", jobs, pid); 
 		}
-
-		ret = 1;
 	}
-
-	return ret;
 }
 
 
 int main(int argc, char * argv[]) {
 
-	signal(SIGINT,  SIG_IGN); /* Disable CTRL-C */
-	signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
-	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
+	//signal(SIGINT,  SIG_IGN); /* Disable CTRL-C */
+	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
+	//signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 
 	char buffer[300];
 	char * args[100];
+
 	while (TRUE) 
 	{
-		shellPrompt();
+		shell_prompt();
 
 		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
 		{
@@ -167,16 +152,17 @@ int main(int argc, char * argv[]) {
 		{
 			if (args[1] == NULL) 
 				chdir(getenv("HOME"));
+
 			else if (chdir(args[1]) != 0) 
 				printf("cd : no such files or directory\n");
 		} 
 		else 
 		{
 			/* EXEC CMD */
-			if (execcmd(args, &bg, &out, i) == 0)
-				exit(EXIT_SUCCESS);
+			launch_process(args, &bg, &out, i);
 		}
 	}
 
 	return EXIT_SUCCESS;
 }
+

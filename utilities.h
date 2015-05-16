@@ -8,3 +8,8 @@
  * tableau ou -1 en cas d'erreur.
  */
 int split(char **, char *, char *);
+
+/**
+ * Affiche le prompt
+ */
+void shell_prompt();

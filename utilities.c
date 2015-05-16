@@ -1,6 +1,14 @@
 #include <string.h>
-
+#include <stdio.h>
+#include <unistd.h>
 #include "utilities.h"
+
+
+void shell_prompt() 
+{
+	printf("[ESI-Shell]:%s$ ", getcwd(NULL, 0));
+}
+
 
 int split(char ** tab, char * cmd, char * splitter)
 {
