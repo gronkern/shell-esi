@@ -8,25 +8,24 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
-
-#define BUFFER_SIZE 100
-#define ARR_SIZE 10
-#define TRUE 1
+#include "Shell.h"
 
 int bgcpt = 0;
 
-void shellPrompt() {
-	printf("[Shell]:%s$ ", getcwd(NULL,0));
+void shellPrompt() 
+{
+	printf("[Shell]:%s$ ", getcwd(NULL, 0));
 }
 
 int parsecmd(char * cmd, char ** args, int * bg, int * out) {
 	int i = 0;
 	char * c;
-	struct DIR * current;
+	DIR * current;
 	struct dirent * dir;
 	char * name[100];
 	int j =0;
 	args[i] = strtok(cmd, " \n");
+
 	while (args[i] != NULL) {
 		i++;
 		args[i] = strtok(NULL, " \n");
@@ -164,9 +163,4 @@ int main(int argc, char * argv[]) {
 	}
 
 	return EXIT_SUCCESS;
-
-
-
-
-
 }
