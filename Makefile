@@ -4,8 +4,11 @@ FLAGS = -std=c99
 Run : Shell
 	./Shell
 
-Shell : Shell.o utilities.o
+Shell : Shell.o utilities.o trap.o
 	$(CC) Shell.o utilities.o -o Shell
+
+trap.o: trap.c trap.h
+	$(CC) trap.c -c -o trap.o
 
 Shell.o : Shell.c Shell.h
 	$(CC) Shell.c -c -o Shell.o
