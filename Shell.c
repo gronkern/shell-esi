@@ -8,7 +8,9 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+
 #include "Shell.h"
+#include "utilities.h"
 
 int bgcpt = 0;
 
@@ -18,18 +20,12 @@ void shellPrompt()
 }
 
 int parsecmd(char * cmd, char ** args, int * bg, int * out) {
-	int i = 0;
 	char * c;
 	DIR * current;
 	struct dirent * dir;
 	char * name[100];
 	int j =0;
-	args[i] = strtok(cmd, " \n");
-
-	while (args[i] != NULL) {
-		i++;
-		args[i] = strtok(NULL, " \n");
-	}
+	int i = split(args, cmd, " \n");
 
 	if (i > 0 ) {
 		if (strcmp(args[i-1], "*") == 0) {
