@@ -14,11 +14,18 @@
 
 int bgcpt = 0;
 
+/*
+ * Display shell prompt.
+ */
 void shellPrompt() 
 {
 	printf("[Shell]:%s$ ", getcwd(NULL, 0));
 }
 
+/* 
+ * Parse command line.
+ * Returns the number of arguments. 
+ */
 int parsecmd(char * cmd, char ** args, int * bg, int * out)
 {
 	int i = split(args, cmd, " \n");
@@ -73,6 +80,7 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 	return i;
 }
 
+
 int execcmd(char ** args, int * bg, int * out, int i) {
 
 	int j;
@@ -117,6 +125,10 @@ int execcmd(char ** args, int * bg, int * out, int i) {
 
 
 int main(int argc, char * argv[]) {
+
+	signal(SIGINT,  SIG_IGN); /* Disable CTRL-C */
+	signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
+	signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 
 	char buffer[300];
 	char * args[100];
