@@ -83,11 +83,15 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 
 int execcmd(char ** args, int * bg, int * out, int i) {
 
-	int j;
 	int pid;
+	int j;
+	int ret;
 
 	if ((pid = fork()) < 0) 
+	{
 		printf("Erreur fork : %s\n", strerror(errno));
+		ret = -1;
+	}
 
 	// FILS
 	else if (pid == 0)
@@ -118,9 +122,10 @@ int execcmd(char ** args, int * bg, int * out, int i) {
 			printf("[%d] %d\n", bgcpt, pid); 
 		}
 
-		return 1;
+		ret = 1;
 	}
 
+	return ret;
 }
 
 
