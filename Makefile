@@ -2,7 +2,7 @@ CC = gcc
 FLAGS = -std=c99
 
 Run : Shell
-	./Shell
+	./script.sh
 
 Shell : Shell.o utilities.o
 	$(CC) Shell.o utilities.o -o Shell
