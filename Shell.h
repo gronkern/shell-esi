@@ -5,3 +5,4 @@
 void shellPrompt();
 int parsecmd(char * cmd, char ** args, int * bg, int * out);
 int execcmd(char ** args, int * bg, int * out, int i);
+void split(char * tab[], char * cmd, char * splitter);
