@@ -38,7 +38,7 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 				{
 					folders[j] = malloc(sizeof(char) * 50); // Taille 50 char
 					strcpy(folders[j], dir->d_name);
-					args[(i++) - 1] = folders[j++];
+					args[(i++) - 1] = folders[j++]; // args[j -> i] doivent être free après launch_process
 				}
 			}
 
@@ -70,8 +70,8 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 }
 
 
-void launch_process(char ** args, int * bg, int * out, int i) {
-
+void launch_process(char ** args, int * bg, int * out, int i)
+{
 	int pid;
 	int j;
 
@@ -96,7 +96,7 @@ void launch_process(char ** args, int * bg, int * out, int i) {
 		if (execvp(args[0], args) != 0)
 			printf("Commande introuvable\n");
 
-		//exit(EXIT_SUCCESS);
+		//exit(EXIT_SUCCESS); Dafuk le fils doit s'arrêter, là il continue é_è
 	} 
 	else 
 	{
