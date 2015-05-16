@@ -27,7 +27,7 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out) {
 	int j =0;
 	int i = split(args, cmd, " \n");
 
-	if (i > 0 ) {
+	if (i > 0) {
 		if (strcmp(args[i-1], "*") == 0) {
 			current = opendir(".");
 			while ((dir = readdir(current)) != NULL) {
@@ -35,13 +35,10 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out) {
 
 					name[j] = malloc(sizeof(char) *50);
 					strcpy(name[j], dir->d_name);
-					args[i-1] = name[j];
-					i++;
-					j++;
+					args[(i++)-1] = name[j++];
 				}
 			}
-			args[i-1] = NULL;
-			i--;	
+			args[(i--)-1] = NULL;
 			closedir(current);
 
 

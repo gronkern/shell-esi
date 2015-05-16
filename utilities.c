@@ -4,12 +4,16 @@
 
 int split(char ** tab, char * cmd, char * splitter)
 {
-	int i = 0;
-	tab[i] = strtok(cmd, " \n");
+	int i = (tab != NULL) ? 0 : -1;
 
-	while (tab[i] != NULL) {
-		i++;
-		tab[i] = strtok(NULL, splitter);
+	if (i == 0)
+	{
+		tab[i] = strtok(cmd, " \n");
+
+		while (tab[i] != NULL) {
+			i++;
+			tab[i] = strtok(NULL, splitter);
+		}
 	}
 
 	return i;

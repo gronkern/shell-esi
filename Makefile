@@ -5,7 +5,7 @@ Run : Shell
 	./script.sh
 
 Shell : Shell.o utilities.o trap.o
-	$(CC) Shell.o utilities.o -o Shell
+	$(CC) Shell.o utilities.o trap.o -o Shell
 
 trap.o: trap.c trap.h
 	$(CC) trap.c -c -o trap.o
