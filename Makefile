@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -std=c99
+FLAGS = -std=c99 -g
 
 Run : Shell
 	./script.sh

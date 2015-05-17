@@ -13,6 +13,7 @@
 #include "utilities.h"
 
 int jobs = 0;
+int dirs = 0;
 
 /* 
  * Parse command line.
@@ -34,11 +35,12 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 			while ((dir = readdir(current)) != NULL) 
 			{
 				if ((strcmp(dir->d_name, "..") != 0) &&
-					(strcmp(dir->d_name, ".") != 0)) 
+						(strcmp(dir->d_name, ".") != 0)) 
 				{
 					folders[j] = malloc(sizeof(char) * 50); // Taille 50 char
 					strcpy(folders[j], dir->d_name);
 					args[(i++) - 1] = folders[j++]; // args[j -> i] doivent être free après launch_process
+					dirs++;
 				}
 			}
 
@@ -64,7 +66,7 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 	}
 
 	if (i > 1 && strcmp(args[i-2], ">") == 0) // Redirection
-			*out = 1;	
+		*out = 1;	
 
 	return i;
 }
@@ -160,6 +162,7 @@ int main(int argc, char * argv[]) {
 		{
 			/* EXEC CMD */
 			launch_process(args, &bg, &out, i);
+			for( ; dirs != 0 ; dirs--) free(args[i - dirs]);
 		}
 	}
 
