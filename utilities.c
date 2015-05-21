@@ -79,10 +79,8 @@ int shift_one(char ** tokens, unsigned pos, unsigned size)
 	int shifted_one = (tokens == NULL || pos >= size) ? -1 : 1;
 
 	if (shifted_one == 1)
-	{
-		for (int i = size - 2; i >= pos; i--)
-			tokens[i + 1] = tokens[i];
-	}
+		for (int i = size - 1; i > pos; i--)
+			tokens[i] = tokens[i - 1];
 	
 	return shifted_one;
 }
