@@ -64,18 +64,22 @@ int find_first(const char ** tokens, unsigned size, const char * token)
 {
 	unsigned i = 0;
 
-	while (i < size && tokens[i] != NULL && strcmp(tokens[i], token))
+	while (i < size && tokens[i] != NULL && strcmp(tokens[i], token) != 0)
 		i++;
 
-	return (i < size) ? i : -1;
+	return (i < size && tokens[i] != NULL &&  strcmp(tokens[i], token) == 0) 
+		? i 
+		: -1;
 }
 
 int shift_one(char ** tokens, unsigned pos, unsigned size, unsigned shift)
 {
-	int shifted_one = (tokens == NULL || pos >= size || size - shift - 1 < 0) ? 0 : 1;
+	int shifted_one = (tokens == NULL || pos >= size || size - shift - 1 < 0) 
+		? 0 
+		: 1;
 
-	if (shifted_one)
-		for (int i = size - 1; i > pos; i--)
+	if (shifted_one == 1)
+		for (int i = size - 1; i >= pos + shift; i--)
 			tokens[i] = tokens[i - shift];
 	
 	return shifted_one;
