@@ -26,11 +26,12 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 	if (i > 0) // Paramètre *
 	{
 		//if (strcmp(tokens[i - 1], "*") == 0) 
-		if (find_first((const char **) tokens, i, "*") != -1);
+		int star_pos;
+		if (star_pos = find_first((const char **) tokens, i, "*") != -1);
 		{
 			struct dirent * dir;
 			DIR * current = opendir(".");
-			int j = 0;
+			//int j = 0;
 			char * folders[100]; // Maximum 100 directories.
 
 			while ((dir = readdir(current)) != NULL) 
@@ -47,10 +48,15 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 					dirs++;
 				}
 			}
-		
+			
+			// Pas trop sur, à tester
+			shift_one(tokens, star_pos, i + dirs, dirs);
+			int j = 0;
+			for ( ; j < dirs; ++j)
+				tokens[star_pos + j] = folders[j];	
 			
 
-			//tokens[(i--) - 1] = NULL;
+			tokens[i + dirs - 2] = NULL;
 			closedir(current);
 		}
 	}
