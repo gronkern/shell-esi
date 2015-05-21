@@ -1,3 +1,5 @@
+#define _POSIX_SOURCE
+
 #include "Shell.h"
 
 #include <stdlib.h>
@@ -10,12 +12,33 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "utilities.h"
 
+struct sigaction act_int;
+struct sigaction act_child;
+pid_t pid;
+pid_t pid_shell;
 int jobs = 0;
 int dirs = 0;
 char * folders[FOLDERS_SIZE]; // Maximum 100 directories.
+
+
+void signal_handler_child(int sig)
+{
+	while(waitpid(-1, NULL, WNOHANG) > 0); 
+
+	printf("\n");
+}
+
+void signal_handler_int(int sig)
+{
+		if(kill(pid, SIGTERM) == 0)
+			printf("\nLe processus %d a reçu un signal SIGINT\n", pid);
+		else
+			printf("\n");
+}
 
 /* 
  * Parse command line.
@@ -85,7 +108,6 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 
 void launch_process(char ** tokens, int * bg, int * out, int i)
 {
-	int pid;
 	int j;
 
 	if ((pid = fork()) < 0) 
@@ -94,6 +116,9 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 	// FILS
 	else if (pid == 0)
 	{
+		
+		sigaction(SIGINT, &act_int, 0);
+
 		//redirection
 		if (*out == 1)
 		{
@@ -104,7 +129,10 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 		}	
 
 		if (execvp(tokens[0], tokens) == -1)
+		{
 			printf("Commande introuvable\n");
+			kill(getpid(), SIGTERM);
+		}
 
 		exit(EXIT_SUCCESS); 
 	} 
@@ -125,16 +153,21 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 
 int main(int argc, char * argv[]) {
 
-	//signal(SIGINT,  SIG_IGN); /* Disable CTRL-C */
-	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
-	//signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
+	pid_shell = getpid();
 
 	char buffer[BUFFER_SIZE];
 	char * tokens[TOKENS_SIZE];
 
+    act_child.sa_handler = signal_handler_child;
+	act_int.sa_handler = signal_handler_int;
+
+	sigaction(SIGCHLD, &act_child, 0);
+	signal(SIGINT, SIG_IGN);
+
 	while (TRUE) 
 	{
 		shell_prompt();
+
 
 		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL) // E.O.F. catching C^d
 			shell_exit(NULL, EXIT_SUCCESS);
