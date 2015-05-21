@@ -23,51 +23,50 @@ char * folders[FOLDERS_SIZE]; // Maximum 100 directories.
  */
 int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 {
-	int i = split(tokens, cmd, "\t \n");
+	int n_tokens = split(tokens, cmd, "\t \n");
 
-	if (i > 0) // Paramètre *
+	if (n_tokens > 0) // Paramètre *
 	{
-		int star_pos = find_first((const char **) tokens, i, "*");
+		int star_pos = find_first((const char **) tokens, n_tokens, "*");
 		if (star_pos != -1)
 		{
+			--n_tokens; // On enlève le *
 			struct dirent * dir;
 			DIR * current = opendir(".");
-			//int j = 0;
 
 			while ((dir = readdir(current)) != NULL) 
 			{
 				if ((strcmp(dir->d_name, "..") != 0) &&
 						(strcmp(dir->d_name, ".") != 0)) 
 				{
-					//if(shift_one(tokens, 
 					folders[dirs] = malloc(sizeof(char) * 50); // Taille 50 char
 					strcpy(folders[dirs], dir->d_name);
-					//tokens[i - 1] = folders[j]; // tokens[j -> i] doivent être free après launch_process
-					//i++;
-					//j++;
-					dirs++;
+					++dirs;
+					++n_tokens; // On rajoute un argument
+
 				}
 			}
-			
-			shift(tokens, star_pos, i + dirs, dirs);
-			int j = 0;
-			for ( ; j < dirs; ++j)
-				tokens[star_pos + j] = folders[j];	
-			
+		
+			// Décalage des arguments après le *
+			shift(tokens, star_pos, n_tokens, dirs);
 
-			tokens[i + dirs - 2] = NULL;
+			// On copie tous les fichiers / folders dans les tokens
+			for (int j = 0; j < dirs; ++j)
+				tokens[star_pos + j] = folders[j];
+
+			tokens[n_tokens] = NULL; // Dernier argument doit être nul
 			closedir(current);
 		}
 	}
 
-	if (i > 0) // Programme en background
+	if (n_tokens > 0) // Programme en background
 	{ 
-		char * c = strrchr(tokens[i - 1], '&');
+		char * c = strrchr(tokens[n_tokens - 1], '&');
 
-		if (strcmp(tokens[i - 1], "&") == 0) 
+		if (strcmp(tokens[n_tokens - 1], "&") == 0) 
 		{
 			*bg = 1;
-			tokens[i - 1] = NULL;
+			tokens[n_tokens - 1] = NULL;
 		} 
 		else if (c != NULL) 
 		{
@@ -76,10 +75,10 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 		}			
 	}
 
-	if (i > 1 && strcmp(tokens[i-2], ">") == 0) // Redirection
+	if (n_tokens > 1 && strcmp(tokens[n_tokens-2], ">") == 0) // Redirection
 		*out = 1;	
 
-	return i;
+	return n_tokens;
 }
 
 
@@ -144,9 +143,9 @@ int main(int argc, char * argv[]) {
 
 		int bg = 0;
 		int out = 0;
-		int i = parsecmd(buffer , tokens, &bg, &out);
+		int n_tokens = parsecmd(buffer , tokens, &bg, &out);
 	
-		if(i == 0)
+		if(n_tokens == 0)
 			continue;
 		
 		if (strcmp(tokens[0], "cd") == 0)
@@ -163,11 +162,24 @@ int main(int argc, char * argv[]) {
 		else 
 		{
 			/* EXEC CMD */
-			launch_process(tokens, &bg, &out, i);
+			launch_process(tokens, &bg, &out, n_tokens);
+
+
 
 			/* Clean names if * has been used */
-//			for( ; dirs != 0 ; dirs--) 
-//				free(tokens[i - dirs]);
+			for( ; dirs != 0 ; --dirs) 
+			{
+				free(folders[dirs - 1]);
+				folders[dirs - 1] = NULL;
+			}
+
+			for (int i = 0; i < n_tokens; ++i)
+			{
+				if (tokens[n_tokens - dirs] != NULL)
+					free(tokens[n_tokens - dirs]);
+
+				tokens[n_tokens - dirs] = NULL;
+			}
 		}
 	}
 
