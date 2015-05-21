@@ -1,5 +1,5 @@
 CC = gcc
-FLAGS = -std=c99 -g
+FLAGS = -std=c99 -pedantic-errors
 
 Run : Shell
 	./Demo

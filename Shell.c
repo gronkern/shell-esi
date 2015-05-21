@@ -19,13 +19,14 @@ int dirs = 0;
  * Parse command line.
  * Returns the number of arguments. 
  */
-int parsecmd(char * cmd, char ** args, int * bg, int * out)
+int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 {
-	int i = split(args, cmd, " \n");
+	int i = split(tokens, cmd, " \n");
 
 	if (i > 0) // Paramètre *
 	{
-		if (strcmp(args[i - 1], "*") == 0) 
+		//if (strcmp(tokens[i - 1], "*") == 0) 
+		if (find_first((const char **) tokens, "*") != NULL);
 		{
 			struct dirent * dir;
 			DIR * current = opendir(".");
@@ -37,26 +38,29 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 				if ((strcmp(dir->d_name, "..") != 0) &&
 						(strcmp(dir->d_name, ".") != 0)) 
 				{
+					//if(shift_one(tokens, 
 					folders[j] = malloc(sizeof(char) * 50); // Taille 50 char
 					strcpy(folders[j], dir->d_name);
-					args[(i++) - 1] = folders[j++]; // args[j -> i] doivent être free après launch_process
+					tokens[i - 1] = folders[j]; // tokens[j -> i] doivent être free après launch_process
+					i++;
+					j++;
 					dirs++;
 				}
 			}
 
-			args[(i--) - 1] = NULL;
+			tokens[(i--) - 1] = NULL;
 			closedir(current);
 		}
 	}
 
 	if (i > 0) // Programme en background
 	{ 
-		char * c = strrchr(args[i - 1], '&');
+		char * c = strrchr(tokens[i - 1], '&');
 
-		if (strcmp(args[i - 1], "&") == 0) 
+		if (strcmp(tokens[i - 1], "&") == 0) 
 		{
 			*bg = 1;
-			args[i - 1] = NULL;
+			tokens[i - 1] = NULL;
 		} 
 		else if (c != NULL) 
 		{
@@ -65,14 +69,14 @@ int parsecmd(char * cmd, char ** args, int * bg, int * out)
 		}			
 	}
 
-	if (i > 1 && strcmp(args[i-2], ">") == 0) // Redirection
+	if (i > 1 && strcmp(tokens[i-2], ">") == 0) // Redirection
 		*out = 1;	
 
 	return i;
 }
 
 
-void launch_process(char ** args, int * bg, int * out, int i)
+void launch_process(char ** tokens, int * bg, int * out, int i)
 {
 	int pid;
 	int j;
@@ -86,13 +90,13 @@ void launch_process(char ** args, int * bg, int * out, int i)
 		//redirection
 		if (*out == 1)
 		{
-			int h = open(args[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
+			int h = open(tokens[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
 			dup2(h, 1);
 			close(h);
-			args[i-2] = NULL;
+			tokens[i-2] = NULL;
 		}	
 
-		if (execvp(args[0], args) != 0)
+		if (execvp(tokens[0], tokens) != 0)
 			printf("Commande introuvable\n");
 
 		//exit(EXIT_SUCCESS); Dafuk le fils doit s'arrêter, là il continue é_è
@@ -119,7 +123,7 @@ int main(int argc, char * argv[]) {
 	//signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 
 	char buffer[BUFFER_SIZE];
-	char * args[TOKENS_SIZE];
+	char * tokens[TOKENS_SIZE];
 
 	while (TRUE) 
 	{
@@ -128,32 +132,34 @@ int main(int argc, char * argv[]) {
 		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL) // E.O.F. catching C^d
 			shell_exit(NULL, EXIT_SUCCESS);
 
-		/* EXIT */
 		if (strcmp(buffer, "exit\n") == 0)
 			shell_exit("Goodbye !", EXIT_SUCCESS);
 
-		/* PARSING CMD */
 		int bg = 0;
 		int out = 0;
-		int i = parsecmd(buffer , args, &bg, &out);
+		int i = parsecmd(buffer , tokens, &bg, &out);
 
-		/* LIGNE VIDE */
 		if(i == 0)
 			continue;
 
-		if (strcmp(args[0], "cd") == 0)
+		if (strcmp(tokens[0], "cd") == 0)
 		{
-			if (args[1] == NULL) 
-				chdir(getenv("HOME"));
-
-			else if (chdir(args[1]) != 0) 
+			if (0 != chdir(tokens[1] == NULL 
+							? getenv("HOME") 
+							: tokens[1]))
 				printf("cd : no such files or directory\n");
 		} 
+		else if (false)
+		{
+			//
+		}
 		else 
 		{
 			/* EXEC CMD */
-			launch_process(args, &bg, &out, i);
-			for( ; dirs != 0 ; dirs--) free(args[i - dirs]);
+			launch_process(tokens, &bg, &out, i);
+
+			/* Clean names if * has been used */
+			for( ; dirs != 0 ; dirs--) free(tokens[i - dirs]);
 		}
 	}
 
