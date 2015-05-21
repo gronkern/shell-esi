@@ -6,9 +6,10 @@ echo
 
 ./Shell
 
+echo "@Ending \"ESI SHELL\" .."
 if [ $? -eq 0 ] ; then
-	echo "\n@Works fine \n"
+	echo "@Works fine \n"
 else
-	echo "\n@There was an error \n"
+	echo "@There was an error \n"
 fi
 

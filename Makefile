@@ -2,7 +2,7 @@ CC = gcc
 FLAGS = -std=c99 -g
 
 Run : Shell
-	./script.sh
+	./Demo
 
 Shell : Shell.o utilities.o trap.o
 	$(CC) $(FLAGS) Shell.o utilities.o trap.o -o Shell
@@ -17,4 +17,4 @@ utilities.o : utilities.c utilities.h
 	$(CC) $(FLAGS) utilities.c -c -o utilities.o
 
 clean :
-	rm -f Shell Shell.o *~
+	rm -f Shell *.o *~

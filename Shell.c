@@ -121,19 +121,15 @@ int main(int argc, char * argv[]) {
 	//signal(SIGQUIT, SIG_IGN); /* Disable CTRL-\ */
 	//signal(SIGTSTP, SIG_IGN); /* Disable CTRL-Z */
 
-	char buffer[300];
-	char * args[100];
+	char buffer[BUFFER_SIZE];
+	char * args[TOKENS_SIZE];
 
 	while (TRUE) 
 	{
 		shell_prompt();
 
-		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
-		{
-			//write(0, 1, '\n');
-			printf("\n");
-			exit(EXIT_FAILURE);
-		}
+		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL) // E.O.F. catching C^d
+			shell_exit(NULL, EXIT_FAILURE);
 
 		/* LIGNE VIDE */
 		if(strcmp(buffer, "\n") == 0)
@@ -141,10 +137,7 @@ int main(int argc, char * argv[]) {
 
 		/* EXIT */
 		if (strcmp(buffer, "exit\n") == 0)
-		{
-			printf("Goodbye ! \n");
-			exit(EXIT_SUCCESS);
-		}
+			shell_exit("Goodbye !", EXIT_SUCCESS);
 
 		/* PARSING CMD */
 		int bg = 0;

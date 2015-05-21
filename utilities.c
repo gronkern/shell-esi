@@ -27,6 +27,12 @@ void shell_prompt()
 	}
 }
 
+void shell_exit(const char * message, int status)
+{
+	printf("%s \n", (message == NULL) ? "" : message);
+	exit(status);
+}
+
 /**
  * Une allocation interne est plus appropriée, peut être que l'utilisateur n'a
  * pas alloué assez de place. A méditer.

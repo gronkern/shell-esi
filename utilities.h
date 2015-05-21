@@ -17,4 +17,8 @@ int split(char ** tokens, char * command, char * splitter);
  */
 void shell_prompt();
 
+/**
+ *
+ */
+void shell_exit(const char * message, int status);
 #endif
