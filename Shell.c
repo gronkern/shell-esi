@@ -31,6 +31,7 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 		if (star_pos != -1)
 		{
 			--n_tokens; // On enlève le *
+			dirs = 0; // On remet dirs à 0
 			struct dirent * dir;
 			DIR * current = opendir(".");
 
@@ -164,21 +165,10 @@ int main(int argc, char * argv[]) {
 			/* EXEC CMD */
 			launch_process(tokens, &bg, &out, n_tokens);
 
-
-
-			/* Clean names if * has been used */
-			for( ; dirs != 0 ; --dirs) 
+			for(int i = 0; i < dirs; ++i) 
 			{
-				free(folders[dirs - 1]);
-				folders[dirs - 1] = NULL;
-			}
-
-			for (int i = 0; i < n_tokens; ++i)
-			{
-				if (tokens[n_tokens - dirs] != NULL)
-					free(tokens[n_tokens - dirs]);
-
-				tokens[n_tokens - dirs] = NULL;
+				free(folders[i]);
+				folders[i] = NULL;
 			}
 		}
 	}
