@@ -27,7 +27,7 @@ void shell_exit(const char * message, int status);
  */
 void shell_exit_error(const char * message);
 
-char * find_first(const char ** tokens, const char * token);
+int find_first(const char ** tokens, unsigned size, const char * token);
 
-int shift_one(char ** tokens, unsigned pos, unsigned size);
+int shift_one(char ** tokens, unsigned pos, unsigned size, unsigned shift);
 #endif

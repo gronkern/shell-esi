@@ -26,7 +26,7 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 	if (i > 0) // Paramètre *
 	{
 		//if (strcmp(tokens[i - 1], "*") == 0) 
-		if (find_first((const char **) tokens, "*") != NULL);
+		if (find_first((const char **) tokens, i, "*") != -1);
 		{
 			struct dirent * dir;
 			DIR * current = opendir(".");
@@ -39,16 +39,18 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 						(strcmp(dir->d_name, ".") != 0)) 
 				{
 					//if(shift_one(tokens, 
-					folders[j] = malloc(sizeof(char) * 50); // Taille 50 char
-					strcpy(folders[j], dir->d_name);
-					tokens[i - 1] = folders[j]; // tokens[j -> i] doivent être free après launch_process
-					i++;
-					j++;
+					folders[dirs] = malloc(sizeof(char) * 50); // Taille 50 char
+					strcpy(folders[dirs], dir->d_name);
+					//tokens[i - 1] = folders[j]; // tokens[j -> i] doivent être free après launch_process
+					//i++;
+					//j++;
 					dirs++;
 				}
 			}
+		
+			
 
-			tokens[(i--) - 1] = NULL;
+			//tokens[(i--) - 1] = NULL;
 			closedir(current);
 		}
 	}

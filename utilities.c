@@ -60,27 +60,25 @@ int split(char ** tab, char * cmd, char * splitter)
 	return i;
 }
 
-char * find_first(const char ** tokens, const char * token)
+int find_first(const char ** tokens, unsigned size, const char * token)
 {
-	char * find_token = NULL;
-	int i = 0;
+	unsigned i = 0;
 
-	while (tokens[i] != NULL && strcmp(tokens[i], token))
+	while (i < size && tokens[i] != NULL && strcmp(tokens[i], token))
 		i++;
 
-	if (tokens[i] != NULL)
-		find_token = (char *) tokens[i];
-
-	return find_token;
+	return (i < size) ? i : -1;
 }
 
-int shift_one(char ** tokens, unsigned pos, unsigned size)
+int shift_one(char ** tokens, unsigned pos, unsigned size, unsigned shift)
 {
-	int shifted_one = (tokens == NULL || pos >= size) ? -1 : 1;
+	int shifted_one = (tokens == NULL || pos >= size || size - shift - 1 < 0) ? 0 : 1;
 
-	if (shifted_one == 1)
+	if (shifted_one)
+	
 		for (int i = size - 1; i > pos; i--)
-			tokens[i] = tokens[i - 1];
+			tokens[i] = tokens[i - shift];
+	}
 	
 	return shifted_one;
 }
