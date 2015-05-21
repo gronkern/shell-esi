@@ -1,15 +1,20 @@
+#ifndef UTILITIES_H
+#define UTILITIES_H
+
 /**
  * Split une chaine en un tableau de chaine selon le délimiteur choisi
- * \param tab Le tableau à remplir, il sera NULL terminé.
- * \param cmd La chaine à splitter.
+ * \param tokens Le tableau à remplir, il sera NULL terminé.
+ * \param command La chaine à splitter.
  * \param splitter La chaine reprenant les délimiteurs.
  *
  * \return L'indice de l'élément NULL, soit le nombre LOGIQUE d'éléments du
- * tableau ou -1 en cas d'erreur.
+ * tableau ou -1 en cas d'erreur. [0 - n - 1] + NULL OU -1 en cas d'erreur.
  */
-int split(char **, char *, char *);
+int split(char ** tokens, char * command, char * splitter);
 
 /**
  * Affiche le prompt
  */
 void shell_prompt();
+
+#endif

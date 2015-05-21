@@ -17,4 +17,4 @@ utilities.o : utilities.c utilities.h
 	$(CC) $(FLAGS) utilities.c -c -o utilities.o
 
 clean :
-	rm -f Shell.o *~
+	rm -f Shell Shell.o *~

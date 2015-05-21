@@ -130,6 +130,7 @@ int main(int argc, char * argv[]) {
 
 		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL)
 		{
+			//write(0, 1, '\n');
 			printf("\n");
 			exit(EXIT_FAILURE);
 		}
