@@ -25,9 +25,8 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 
 	if (i > 0) // Paramètre *
 	{
-		//if (strcmp(tokens[i - 1], "*") == 0) 
-		int star_pos;
-		if (star_pos = find_first((const char **) tokens, i, "*") != -1);
+		int star_pos = find_first((const char **) tokens, i, "*");
+		if (star_pos != -1)
 		{
 			struct dirent * dir;
 			DIR * current = opendir(".");
@@ -49,7 +48,6 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 				}
 			}
 			
-			// Pas trop sur, à tester
 			shift_one(tokens, star_pos, i + dirs, dirs);
 			int j = 0;
 			for ( ; j < dirs; ++j)
@@ -104,10 +102,10 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 			tokens[i-2] = NULL;
 		}	
 
-		if (execvp(tokens[0], tokens) != 0)
+		if (execvp(tokens[0], tokens) == -1)
 			printf("Commande introuvable\n");
 
-		//exit(EXIT_SUCCESS); Dafuk le fils doit s'arrêter, là il continue é_è
+		exit(EXIT_SUCCESS); 
 	} 
 	else 
 	{
@@ -146,15 +144,15 @@ int main(int argc, char * argv[]) {
 		int bg = 0;
 		int out = 0;
 		int i = parsecmd(buffer , tokens, &bg, &out);
-
+	
 		if(i == 0)
 			continue;
-
+		
 		if (strcmp(tokens[0], "cd") == 0)
 		{
-			if (0 != chdir(tokens[1] == NULL 
+			if (chdir(tokens[1] == NULL 
 							? getenv("HOME") 
-							: tokens[1]))
+							: tokens[1]) != 0)
 				printf("cd : no such files or directory\n");
 		} 
 		else if (false)
@@ -167,7 +165,8 @@ int main(int argc, char * argv[]) {
 			launch_process(tokens, &bg, &out, i);
 
 			/* Clean names if * has been used */
-			for( ; dirs != 0 ; dirs--) free(tokens[i - dirs]);
+//			for( ; dirs != 0 ; dirs--) 
+//				free(tokens[i - dirs]);
 		}
 	}
 

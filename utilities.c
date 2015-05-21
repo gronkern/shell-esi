@@ -49,7 +49,7 @@ int split(char ** tab, char * cmd, char * splitter)
 
 	if (i == 0)
 	{
-		tab[i] = strtok(cmd, "\t \n");
+		tab[i] = strtok(cmd, splitter);
 
 		while (tab[i] != NULL) {
 			i++;
