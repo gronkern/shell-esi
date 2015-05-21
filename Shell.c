@@ -1,3 +1,5 @@
+#include "Shell.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -9,7 +11,6 @@
 #include <dirent.h>
 #include <unistd.h>
 
-#include "Shell.h"
 #include "utilities.h"
 
 int jobs = 0;
@@ -21,7 +22,7 @@ int dirs = 0;
  */
 int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 {
-	int i = split(tokens, cmd, " \n");
+	int i = split(tokens, cmd, "\t \n");
 
 	if (i > 0) // Paramètre *
 	{
