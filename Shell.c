@@ -78,10 +78,7 @@ void launch_process(char ** args, int * bg, int * out, int i)
 	int j;
 
 	if ((pid = fork()) < 0) 
-	{
-		perror("Erreur fork !");
-		exit(EXIT_FAILURE);
-	}
+		shell_exit_error("Erreur fork !");
 
 	// FILS
 	else if (pid == 0)
@@ -129,11 +126,7 @@ int main(int argc, char * argv[]) {
 		shell_prompt();
 
 		if (fgets(buffer, BUFFER_SIZE, stdin) == NULL) // E.O.F. catching C^d
-			shell_exit(NULL, EXIT_FAILURE);
-
-		/* LIGNE VIDE */
-		if(strcmp(buffer, "\n") == 0)
-			continue;
+			shell_exit(NULL, EXIT_SUCCESS);
 
 		/* EXIT */
 		if (strcmp(buffer, "exit\n") == 0)
@@ -143,6 +136,10 @@ int main(int argc, char * argv[]) {
 		int bg = 0;
 		int out = 0;
 		int i = parsecmd(buffer , args, &bg, &out);
+
+		/* LIGNE VIDE */
+		if(i == 0)
+			continue;
 
 		if (strcmp(args[0], "cd") == 0)
 		{

@@ -21,4 +21,9 @@ void shell_prompt();
  *
  */
 void shell_exit(const char * message, int status);
+
+/**
+ *
+ */
+void shell_exit_error(const char * message);
 #endif

@@ -33,6 +33,12 @@ void shell_exit(const char * message, int status)
 	exit(status);
 }
 
+void shell_exit_error(const char * message)
+{
+	perror((message == NULL) ? "" : message);
+	exit(EXIT_FAILURE);
+}
+
 /**
  * Une allocation interne est plus appropriée, peut être que l'utilisateur n'a
  * pas alloué assez de place. A méditer.
