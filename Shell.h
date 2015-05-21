@@ -3,6 +3,7 @@
 
 #define BUFFER_SIZE 100
 #define TOKENS_SIZE 100
+#define FOLDERS_SIZE 100
 #define ARR_SIZE 10
 #define TRUE 1
 

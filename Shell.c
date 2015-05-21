@@ -15,6 +15,7 @@
 
 int jobs = 0;
 int dirs = 0;
+char * folders[FOLDERS_SIZE]; // Maximum 100 directories.
 
 /* 
  * Parse command line.
@@ -32,7 +33,6 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 			struct dirent * dir;
 			DIR * current = opendir(".");
 			//int j = 0;
-			char * folders[100]; // Maximum 100 directories.
 
 			while ((dir = readdir(current)) != NULL) 
 			{
@@ -49,7 +49,7 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 				}
 			}
 			
-			shift_one(tokens, star_pos, i + dirs, dirs);
+			shift(tokens, star_pos, i + dirs, dirs);
 			int j = 0;
 			for ( ; j < dirs; ++j)
 				tokens[star_pos + j] = folders[j];	

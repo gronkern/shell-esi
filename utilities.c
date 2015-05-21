@@ -72,7 +72,12 @@ int find_first(const char ** tokens, unsigned size, const char * token)
 		: -1;
 }
 
-int shift_one(char ** tokens, unsigned pos, unsigned size, unsigned shift)
+int shift_one(char ** tokens, unsigned pos, unsigned size)
+{
+	return shift(tokens, pos, size, 1);
+}
+
+int shift(char ** tokens, unsigned pos, unsigned size, unsigned shift)
 {
 	int shifted_one = (tokens == NULL || pos >= size || size - shift - 1 < 0) 
 		? 0 
