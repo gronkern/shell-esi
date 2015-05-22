@@ -36,10 +36,10 @@ void signal_handler_child(int sig)
 
 void signal_handler_int(int sig)
 {
-		if(kill(pid, SIGTERM) == 0)
-			printf("\nLe processus %d a reçu un signal SIGINT\n", pid);
+		if(sig = SIGINT)
+			printf("\nLe processus %d a reçu un signal SIGINT\n", pid_shell);
 		else
-			printf("\n");
+			printf("\nAutre signal\n");
 }
 
 /* 
@@ -176,9 +176,12 @@ int main(int argc, char * argv[]) {
 	char * tokens[TOKENS_SIZE];
 
 
-	//sigaction(SIGCHLD, &act_child, NULL);
-	signal(SIGCHLD, signal_handler_child);
-	signal(SIGINT, SIG_IGN); // C^c ne devrait pas marcher
+	sigaction(SIGCHLD, &act_child, NULL);
+	sigaction(SIGINT, &act_int, NULL);
+	//
+	//SIGNAL ::: Avoid its use: use sigaction(2) instead.  See Portability below.
+	//signal(SIGCHLD, signal_handler_child);
+	//signal(SIGINT, SIG_IGN); // C^c ne devrait pas marcher
 	
 
 	while (TRUE) 
