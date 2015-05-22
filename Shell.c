@@ -23,6 +23,8 @@ pid_t pid_shell;
 int jobs = 0;
 int dirs = 0;
 char * folders[FOLDERS_SIZE]; // Maximum 100 directories.
+int redirections[ARR_SIZE];
+int size_redirec = 0;
 
 
 void signal_handler_child(int sig)
@@ -99,8 +101,16 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 		}			
 	}
 
-	if (n_tokens > 1 && strcmp(tokens[n_tokens-2], ">") == 0) // Redirection
+	//if (n_tokens > 1 && strcmp(tokens[n_tokens-2], ">") == 0) // Redirection
+	int pos_redirection = find_first((const char **) tokens, n_tokens, ">");
+	if (n_tokens > 2 && pos_redirection != -1)
+	{
 		*out = 1;	
+		redirections[size_redirec++] = pos_redirection;
+		printf("%d  pos_redir\n", pos_redirection);
+		printf("%d  size_redir\n", size_redirec);
+		printf("%d  pos redir tab\n", redirections[size_redirec -1]);
+	}
 
 	return n_tokens;
 }
@@ -122,10 +132,13 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 		//redirection
 		if (*out == 1)
 		{
-			int h = open(tokens[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
+			//int h = open(tokens[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
+			int h = open(tokens[redirections[size_redirec - 1] + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
 			dup2(h, 1);
 			close(h);
-			tokens[i-2] = NULL;
+			//tokens[i-2] = NULL;
+			tokens[redirections[size_redirec - 1]] = NULL;
+			size_redirec--;
 		}	
 
 		if (execvp(tokens[0], tokens) == -1)
