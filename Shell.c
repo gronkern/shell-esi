@@ -166,16 +166,20 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 
 int main(int argc, char * argv[]) {
 
+	/** Global variable init **/
 	pid_shell = getpid();
-
-	char buffer[BUFFER_SIZE];
-	char * tokens[TOKENS_SIZE];
-
     act_child.sa_handler = signal_handler_child;
 	act_int.sa_handler = signal_handler_int;
 
-	sigaction(SIGCHLD, &act_child, 0);
-	signal(SIGINT, SIG_IGN);
+	/** Tokens variables **/
+	char buffer[BUFFER_SIZE];
+	char * tokens[TOKENS_SIZE];
+
+
+	//sigaction(SIGCHLD, &act_child, NULL);
+	signal(SIGCHLD, signal_handler_child);
+	signal(SIGINT, SIG_IGN); // C^c ne devrait pas marcher
+	
 
 	while (TRUE) 
 	{
