@@ -29,15 +29,13 @@ int size_redirec = 0;
 
 void signal_handler_child(int sig)
 {
-	while(waitpid(-1, NULL, WNOHANG) > 0); 
-
-	printf("\n");
+	while(waitpid(-1, NULL, WNOHANG) > 0); // remove every zombies children
 }
 
 void signal_handler_int(int sig)
 {
 		if(sig = SIGINT)
-			printf("\nLe processus %d a reçu un signal SIGINT\n", pid_shell);
+			printf("\nLe processus %d a reçu un signal SIGINT\n", pid);
 		else
 			printf("\nAutre signal\n");
 }
@@ -85,7 +83,7 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 		}
 	}
 
-	if (n_tokens > 0) // Programme en background
+	if (n_tokens > 1) // Programme en background
 	{ 
 		char * c = strrchr(tokens[n_tokens - 1], '&');
 
@@ -127,7 +125,8 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 	else if (pid == 0)
 	{
 		
-		sigaction(SIGINT, &act_int, 0);
+		// unbind C^c 
+		sigaction(SIGINT, &act_int, NULL);
 
 		//redirection
 		if (*out == 1)
