@@ -87,7 +87,11 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 			for (int j = 0; j < dirs; ++j)
 				tokens[star_pos + j] = folders[j];
 
-			tokens[n_tokens] = NULL; // Dernier argument doit être nul
+			tokens[n_tokens] = NULL; // Dernier argument doit être null
+
+			for (int i = 0; i < n_tokens; ++i)
+				printf("Tokens %d : %s\n", i, tokens[i]);
+
 			closedir(current);
 		}
 	}
@@ -108,15 +112,14 @@ int parsecmd(char * cmd, char ** tokens, int * bg, int * out)
 		}			
 	}
 
+	size_redirec = 0;
 	//if (n_tokens > 1 && strcmp(tokens[n_tokens-2], ">") == 0) // Redirection
 	int pos_redirection = find_first((const char **) tokens, n_tokens, ">");
+
 	if (n_tokens > 2 && pos_redirection != -1)
 	{
 		*out = 1;	
 		redirections[size_redirec++] = pos_redirection;
-		printf("%d  pos_redir\n", pos_redirection);
-		printf("%d  size_redir\n", size_redirec);
-		printf("%d  pos redir tab\n", redirections[size_redirec -1]);
 	}
 
 	return n_tokens;
@@ -127,28 +130,26 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 {
 	int j;
 
-	if ((pid = fork()) < 0) 
-		shell_exit_error("Erreur fork !");
+	pid = fork();
 
-	// FILS
-	else if (pid == 0)
+	if (pid < 0) 
 	{
-		
+		shell_exit_error("Erreur fork !");
+	}
+	else if (pid == 0) // FILS
+	{
 		// unbind C^c 
 		sigaction(SIGINT, &act_int, NULL);
-
 		sigaction(SIGTERM, &act_term, NULL);
 
 		//redirection
 		if (*out == 1)
 		{
-			//int h = open(tokens[i - 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
 			int h = open(tokens[redirections[size_redirec - 1] + 1], O_WRONLY | O_CREAT | O_TRUNC, 0644);	
 			dup2(h, 1);
 			close(h);
 			//tokens[i-2] = NULL;
 			tokens[redirections[size_redirec - 1]] = NULL;
-			size_redirec--;
 		}	
 
 		if (execvp(tokens[0], tokens) == -1)
