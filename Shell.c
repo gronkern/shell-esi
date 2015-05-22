@@ -18,14 +18,23 @@
 
 struct sigaction act_int;
 struct sigaction act_child;
+struct sigaction act_term;
 pid_t pid;
 pid_t pid_shell;
+
 int jobs = 0;
+
 int dirs = 0;
 char * folders[FOLDERS_SIZE]; // Maximum 100 directories.
+
 int redirections[ARR_SIZE];
 int size_redirec = 0;
 
+void signal_handler_term(int sig)
+{
+	printf("terminé \n");
+	fflush(stdout);
+}
 
 void signal_handler_child(int sig)
 {
@@ -128,6 +137,8 @@ void launch_process(char ** tokens, int * bg, int * out, int i)
 		// unbind C^c 
 		sigaction(SIGINT, &act_int, NULL);
 
+		sigaction(SIGTERM, &act_term, NULL);
+
 		//redirection
 		if (*out == 1)
 		{
@@ -169,6 +180,7 @@ int main(int argc, char * argv[]) {
 	pid_shell = getpid();
     act_child.sa_handler = signal_handler_child;
 	act_int.sa_handler = signal_handler_int;
+	act_term.sa_handler = signal_handler_term;
 
 	/** Tokens variables **/
 	char buffer[BUFFER_SIZE];
@@ -177,6 +189,7 @@ int main(int argc, char * argv[]) {
 
 	sigaction(SIGCHLD, &act_child, NULL);
 	sigaction(SIGINT, &act_int, NULL);
+
 	//
 	//SIGNAL ::: Avoid its use: use sigaction(2) instead.  See Portability below.
 	//signal(SIGCHLD, signal_handler_child);
