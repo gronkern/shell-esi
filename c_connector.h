@@ -1,8 +1,8 @@
 #ifndef KA_HEADER
 
-#include "Btrans.h"
+#include "btrans.h"
 
-//pembuatan struct beserta data datanya
+//Binary struct in transition of data
 #define MODAL_DASAR 3500000
 
 typedef struct SKA KA;
@@ -25,6 +25,8 @@ struct SKA {
   int id_bisnis;
   int id_biasa;
   int keuntungan_kereta;
+  char jenis_kelas[ARR_LENGTH];
+  int eco_trans[8];
 
   KA *nextNode;
 };
