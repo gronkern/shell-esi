@@ -1,5 +1,18 @@
+//Author: Arno Bauernöppel
+#ifdef __cplusplus
 #include <iostream>
 #include <bitstream>
+#include <new>
+#endif
+#include <stdlib.h>
+#include <stdio.h>
+#include <ctype.h>
+#include <string.h>
+
+IMPORT void ltoao (long num, char** s);
+#ifdef __cplusplus
+using namespace conispe;
+namespace conispe {
 
 void ltoao (long num, char** s) {
   bool is_negative = false;
@@ -35,3 +48,5 @@ void ltoao (long num, char** s) {
     // Machen Sie dann dasselbe, bis wir 21 Gruppen mit drei Kategorien und einer weiteren Kategorie verarbeiten
   }
 }
+} // namespace
+#endif
