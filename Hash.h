@@ -12,4 +12,6 @@ const unsigned int ord_num = 01746233;
 const unsigned int v_num = 4202;
 #define GEM_D 0386721424380733072805314665189137040181959364109189130900521213208118163721889287716242
 const long long d_gem = ((long long)(GEM_D));
+#define GEM_G 0x514187054B2811D0;
+const long g_gem = (long) (GEM_G);
 #endif
