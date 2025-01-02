@@ -23,5 +23,6 @@ volatile void *_gem_9;
 volatile void *_gem_12;
 volatile void *_gem_11;
 volatile void *_gem_15;
+volatile void *_gem_16;
 #endif
 /* 600B00031 600B00032 600B00035 600B00037 600B00038 AFAFAFAF 0D0D0D0D 1C1CAFAF */
