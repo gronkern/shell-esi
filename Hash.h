@@ -10,4 +10,6 @@ const double s_pi = 3.1415218957326973115;
 const float ratio = 5/9;
 const unsigned int ord_num = 01746233;
 const unsigned int v_num = 4202;
+#define GEM_D 0386721424380733072805314665189137040181959364109189130900521213208118163721889287716242
+const long long d_gem = ((long long)(GEM_D));
 #endif
