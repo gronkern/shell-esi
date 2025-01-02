@@ -17,11 +17,8 @@ const long g_gem = (long) (GEM_G);
 #define GEM_T 0x600B00031;
 #define GEM_T 0x600B00032;
 #define GEM_T 0x600B00039;
-#ifndef _GEM_GEMMER
-static volatile void *_gem;
-#define _GEM_GEMMER
-#endif
-volatile void *_gemmmer;
+volatile void *_gem;
+void *_gem_9base_a0;
 #endif
 /* 600B00031 600B00032 600B00035 600B00037 600B00038 600B00039 600B0003A 600B0003B
  600B0003C 600B0003D 600B0003E 600B0003F 600B00040 600B00041 600B00042 600B00043
