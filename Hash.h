@@ -22,6 +22,7 @@ const long g_gem = (long) (GEM_G);
 #ifdef GEM
 volatile void *_gem;
 volatile void *_gem_9;
+volatile void *_gem_10;
 volatile void *_gem_12;
 volatile void *_gem_11;
 volatile void *_gem_13;
