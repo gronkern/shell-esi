@@ -1,7 +1,6 @@
 /*Author:   Arno Bauernöppel
-  Location: Brandenburg
+  Location: Luckenwalde
   Region:   Berlin/Brandenburg
-  Locale:   de_DE.UTF8
 /*
 #ifndef DHASH_
 #define DHASH_
