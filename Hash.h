@@ -22,6 +22,7 @@ volatile void *_gem;
 volatile void *_gem_9;
 volatile void *_gem_12;
 volatile void *_gem_11;
+volatile void *_gem_13;
 volatile void *_gem_15;
 volatile void *_gem_16;
 #endif
