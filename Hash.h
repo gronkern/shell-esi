@@ -14,4 +14,12 @@ const unsigned int v_num = 4202;
 const long long d_gem = ((long long)(GEM_D));
 #define GEM_G 0x514187054B2811D0;
 const long g_gem = (long) (GEM_G);
+#define GEM_T 0x600B00031;
+#define GEM_T 0x600B00032;
+#define GEM_T 0x600B00037;
+#ifndef _GEM_GEMMER
+static volatile void *_gem;
+#define _GEM_GEMMER
+#endif
+volatile void *_gemmmer;
 #endif
