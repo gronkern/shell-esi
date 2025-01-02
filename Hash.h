@@ -19,7 +19,13 @@ const long g_gem = (long) (GEM_G);
 #define GEM_T 0x600B00039;
 volatile void *_gem;
 void *_gem_9base_a0;
-#endif
+void *_gem_10base_a0;
+void *_gem_11base_a0;
+void *_gem_12base_a0;
+void *_gem_13base_a0;
+void *_gem_14base_a0;
+void *_gem_15base_a0;
+void *_gem_16base_a0;
 /* 600B00031 600B00032 600B00035 600B00037 600B00038 600B00039 600B0003A 600B0003B
  600B0003C 600B0003D 600B0003E 600B0003F 600B00040 600B00041 600B00042 600B00043
  600B00044 600B00045 600B0004C 600B0004D 600B0004E 600B0004F 600B00050 600B00051 */
